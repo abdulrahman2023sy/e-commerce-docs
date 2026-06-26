@@ -205,13 +205,54 @@
         }
       }
     },
-    "/auth/auth/change-password": {
+    "/auth/reset-password": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Reset Password",
+        "operationId": "reset_password_auth_reset_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/change-password": {
       "post": {
         "tags": [
           "auth"
         ],
         "summary": "Change Password",
-        "operationId": "change_password_auth_auth_change_password_post",
+        "operationId": "change_password_auth_change_password_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1076,6 +1117,273 @@
           }
         }
       }
+    },
+    "/orders": {
+      "get": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "List Orders",
+        "operationId": "list_orders_orders_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Userid"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ReceiptStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedOrders"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/{order_id}/status": {
+      "patch": {
+        "tags": [
+          "orders"
+        ],
+        "summary": "Update Order Status",
+        "operationId": "update_order_status_orders__order_id__status_patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Order Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderStatusBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/favorites/": {
+      "get": {
+        "tags": [
+          "favorites"
+        ],
+        "summary": "Get current user's favorites",
+        "operationId": "get_favorites_favorites__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoriteListOut"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/favorites/{product_id}": {
+      "post": {
+        "tags": [
+          "favorites"
+        ],
+        "summary": "Add a product to favorites",
+        "operationId": "add_favorite_favorites__product_id__post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Product Id"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoriteOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "favorites"
+        ],
+        "summary": "Remove a product from favorites",
+        "operationId": "remove_favorite_favorites__product_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Product Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1173,6 +1481,89 @@
         ],
         "title": "CreatePaymentIntentResponse"
       },
+      "FavoriteListOut": {
+        "properties": {
+          "products": {
+            "items": {
+              "$ref": "#/components/schemas/FavoriteProduct"
+            },
+            "type": "array",
+            "title": "Products"
+          }
+        },
+        "type": "object",
+        "required": [
+          "products"
+        ],
+        "title": "FavoriteListOut"
+      },
+      "FavoriteOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "user_id",
+          "product_id"
+        ],
+        "title": "FavoriteOut"
+      },
+      "FavoriteProduct": {
+        "properties": {
+          "ProductId": {
+            "type": "integer",
+            "title": "Productid"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "price": {
+            "type": "number",
+            "title": "Price"
+          },
+          "image": {
+            "type": "string",
+            "title": "Image"
+          },
+          "rating": {
+            "type": "number",
+            "title": "Rating"
+          },
+          "discountPercentage": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discountpercentage"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ProductId",
+          "name",
+          "price",
+          "image",
+          "rating"
+        ],
+        "title": "FavoriteProduct"
+      },
       "ForgotPasswordRequest": {
         "properties": {
           "email": {
@@ -1211,7 +1602,7 @@
           "password": {
             "type": "string",
             "title": "Password",
-            "example":"Admin123!"
+            "example": "Admin123!"
           }
         },
         "type": "object",
@@ -1243,6 +1634,89 @@
           "price"
         ],
         "title": "OrderItemIn"
+      },
+      "OrderItemOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "price": {
+            "type": "number",
+            "title": "Price"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "price",
+          "quantity"
+        ],
+        "title": "OrderItemOut"
+      },
+      "OrderOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OrderItemOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "number",
+            "title": "Total"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "shippingAddress": {
+            "$ref": "#/components/schemas/ShippingAddressOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "userId",
+          "items",
+          "total",
+          "status",
+          "shippingAddress"
+        ],
+        "title": "OrderOut"
+      },
+      "PaginatedOrders": {
+        "properties": {
+          "orders": {
+            "items": {
+              "$ref": "#/components/schemas/OrderOut"
+            },
+            "type": "array",
+            "title": "Orders"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "type": "object",
+        "required": [
+          "orders",
+          "pagination"
+        ],
+        "title": "PaginatedOrders"
       },
       "Pagination": {
         "properties": {
@@ -1636,6 +2110,18 @@
         ],
         "title": "ProductUpdate"
       },
+      "ReceiptStatus": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "confirmed",
+          "processing",
+          "shipped",
+          "delivered",
+          "cancelled"
+        ],
+        "title": "ReceiptStatus"
+      },
       "RefreshTokenRequest": {
         "properties": {
           "refreshToken": {
@@ -1664,21 +2150,44 @@
             "type": "string",
             "minLength": 8,
             "title": "Password"
+          },
+          "confirmPassword": {
+            "type": "string",
+            "title": "Confirmpassword"
           }
         },
         "type": "object",
         "required": [
           "name",
           "email",
-          "password"
+          "password",
+          "confirmPassword"
         ],
         "title": "RegisterRequest"
       },
+      "ResetPasswordRequest": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "title": "Token"
+          },
+          "newPassword": {
+            "type": "string",
+            "title": "Newpassword"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token",
+          "newPassword"
+        ],
+        "title": "ResetPasswordRequest"
+      },
       "ShippingAddressIn": {
         "properties": {
-          "full_name": {
+          "fullName": {
             "type": "string",
-            "title": "Full Name"
+            "title": "Fullname"
           },
           "address": {
             "type": "string",
@@ -1688,19 +2197,64 @@
             "type": "string",
             "title": "City"
           },
-          "zip_code": {
+          "zipCode": {
             "type": "string",
-            "title": "Zip Code"
+            "title": "Zipcode"
           }
         },
         "type": "object",
         "required": [
-          "full_name",
+          "fullName",
           "address",
           "city",
-          "zip_code"
+          "zipCode"
         ],
         "title": "ShippingAddressIn"
+      },
+      "ShippingAddressOut": {
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "title": "Fullname"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "address": {
+            "type": "string",
+            "title": "Address"
+          },
+          "city": {
+            "type": "string",
+            "title": "City"
+          },
+          "zipCode": {
+            "type": "string",
+            "title": "Zipcode"
+          }
+        },
+        "type": "object",
+        "required": [
+          "fullName",
+          "email",
+          "address",
+          "city",
+          "zipCode"
+        ],
+        "title": "ShippingAddressOut"
+      },
+      "UpdateOrderStatusBody": {
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/ReceiptStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "UpdateOrderStatusBody"
       },
       "UserOut": {
         "properties": {
