@@ -1267,6 +1267,122 @@
         }
       }
     },
+    "/profile/": {
+      "get": {
+        "tags": [
+          "profile"
+        ],
+        "summary": "Get Profile",
+        "operationId": "get_profile_profile__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileOut"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "profile"
+        ],
+        "summary": "Update Profile",
+        "operationId": "update_profile_profile__put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/profile/avatar": {
+      "post": {
+        "tags": [
+          "profile"
+        ],
+        "summary": "Update Avatar",
+        "operationId": "update_avatar_profile_avatar_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_update_avatar_profile_avatar_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvatarOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/favorites/": {
       "get": {
         "tags": [
@@ -1384,10 +1500,130 @@
           }
         }
       }
+    },
+    "/admin/dashboard": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Dashboard",
+        "operationId": "dashboard_admin_dashboard_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "range",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(week|month|year)$",
+              "default": "week",
+              "title": "Range"
+            }
+          },
+          {
+            "name": "accept-language",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Accept-Language"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "Alert": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "time": {
+            "type": "string",
+            "title": "Time"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "message",
+          "time"
+        ],
+        "title": "Alert"
+      },
+      "AvatarOut": {
+        "properties": {
+          "avatar": {
+            "type": "string",
+            "title": "Avatar"
+          }
+        },
+        "type": "object",
+        "required": [
+          "avatar"
+        ],
+        "title": "AvatarOut"
+      },
+      "Body_update_avatar_profile_avatar_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_update_avatar_profile_avatar_post"
+      },
       "Body_upload_product_images_products__product_id__images_post": {
         "properties": {
           "files": {
@@ -1404,6 +1640,24 @@
           "files"
         ],
         "title": "Body_upload_product_images_products__product_id__images_post"
+      },
+      "CategoryDataPoint": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "value": {
+            "type": "integer",
+            "title": "Value"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "title": "CategoryDataPoint"
       },
       "ChangePasswordRequest": {
         "properties": {
@@ -1480,6 +1734,122 @@
           "receiptId"
         ],
         "title": "CreatePaymentIntentResponse"
+      },
+      "DashboardOut": {
+        "properties": {
+          "totalRevenue": {
+            "type": "number",
+            "title": "Totalrevenue"
+          },
+          "totalOrders": {
+            "type": "integer",
+            "title": "Totalorders"
+          },
+          "totalProducts": {
+            "type": "integer",
+            "title": "Totalproducts"
+          },
+          "totalUsers": {
+            "type": "integer",
+            "title": "Totalusers"
+          },
+          "revenueTrend": {
+            "type": "string",
+            "title": "Revenuetrend"
+          },
+          "ordersTrend": {
+            "type": "string",
+            "title": "Orderstrend"
+          },
+          "productsTrend": {
+            "type": "string",
+            "title": "Productstrend"
+          },
+          "usersTrend": {
+            "type": "string",
+            "title": "Userstrend"
+          },
+          "pendingOrders": {
+            "type": "integer",
+            "title": "Pendingorders"
+          },
+          "lowStock": {
+            "type": "integer",
+            "title": "Lowstock"
+          },
+          "newCustomers": {
+            "type": "integer",
+            "title": "Newcustomers"
+          },
+          "avgOrderValue": {
+            "type": "number",
+            "title": "Avgordervalue"
+          },
+          "salesData": {
+            "items": {
+              "$ref": "#/components/schemas/SalesDataPoint"
+            },
+            "type": "array",
+            "title": "Salesdata"
+          },
+          "performanceData": {
+            "items": {
+              "$ref": "#/components/schemas/PerformanceDataPoint"
+            },
+            "type": "array",
+            "title": "Performancedata"
+          },
+          "categoryData": {
+            "items": {
+              "$ref": "#/components/schemas/CategoryDataPoint"
+            },
+            "type": "array",
+            "title": "Categorydata"
+          },
+          "alerts": {
+            "items": {
+              "$ref": "#/components/schemas/Alert"
+            },
+            "type": "array",
+            "title": "Alerts"
+          },
+          "recentOrders": {
+            "items": {
+              "$ref": "#/components/schemas/RecentOrder"
+            },
+            "type": "array",
+            "title": "Recentorders"
+          },
+          "topProducts": {
+            "items": {
+              "$ref": "#/components/schemas/TopProduct"
+            },
+            "type": "array",
+            "title": "Topproducts"
+          }
+        },
+        "type": "object",
+        "required": [
+          "totalRevenue",
+          "totalOrders",
+          "totalProducts",
+          "totalUsers",
+          "revenueTrend",
+          "ordersTrend",
+          "productsTrend",
+          "usersTrend",
+          "pendingOrders",
+          "lowStock",
+          "newCustomers",
+          "avgOrderValue",
+          "salesData",
+          "performanceData",
+          "categoryData",
+          "alerts",
+          "recentOrders",
+          "topProducts"
+        ],
+        "title": "DashboardOut"
       },
       "FavoriteListOut": {
         "properties": {
@@ -1602,7 +1972,7 @@
           "password": {
             "type": "string",
             "title": "Password",
-            "example": "Admin123!"
+            "example":"Admin123!"
           }
         },
         "type": "object",
@@ -1793,6 +2163,29 @@
           "pagination"
         ],
         "title": "PaginationUser"
+      },
+      "PerformanceDataPoint": {
+        "properties": {
+          "month": {
+            "type": "integer",
+            "title": "Month"
+          },
+          "conversion": {
+            "type": "number",
+            "title": "Conversion"
+          },
+          "traffic": {
+            "type": "integer",
+            "title": "Traffic"
+          }
+        },
+        "type": "object",
+        "required": [
+          "month",
+          "conversion",
+          "traffic"
+        ],
+        "title": "PerformanceDataPoint"
       },
       "ProductIn": {
         "properties": {
@@ -2110,6 +2503,89 @@
         ],
         "title": "ProductUpdate"
       },
+      "ProfileOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "avatar": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "email",
+          "role",
+          "created_at"
+        ],
+        "title": "ProfileOut"
+      },
+      "ProfileUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address"
+          }
+        },
+        "type": "object",
+        "title": "ProfileUpdate"
+      },
       "ReceiptStatus": {
         "type": "string",
         "enum": [
@@ -2121,6 +2597,41 @@
           "cancelled"
         ],
         "title": "ReceiptStatus"
+      },
+      "RecentOrder": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "createdAt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Createdat"
+          },
+          "total": {
+            "type": "number",
+            "title": "Total"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "createdAt",
+          "total",
+          "status"
+        ],
+        "title": "RecentOrder"
       },
       "RefreshTokenRequest": {
         "properties": {
@@ -2183,6 +2694,34 @@
         ],
         "title": "ResetPasswordRequest"
       },
+      "SalesDataPoint": {
+        "properties": {
+          "day": {
+            "type": "string",
+            "title": "Day"
+          },
+          "revenue": {
+            "type": "number",
+            "title": "Revenue"
+          },
+          "orders": {
+            "type": "integer",
+            "title": "Orders"
+          },
+          "sales": {
+            "type": "number",
+            "title": "Sales"
+          }
+        },
+        "type": "object",
+        "required": [
+          "day",
+          "revenue",
+          "orders",
+          "sales"
+        ],
+        "title": "SalesDataPoint"
+      },
       "ShippingAddressIn": {
         "properties": {
           "fullName": {
@@ -2243,6 +2782,39 @@
           "zipCode"
         ],
         "title": "ShippingAddressOut"
+      },
+      "TopProduct": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "image": {
+            "type": "string",
+            "title": "Image"
+          },
+          "price": {
+            "type": "number",
+            "title": "Price"
+          },
+          "sales": {
+            "type": "integer",
+            "title": "Sales"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "image",
+          "price",
+          "sales"
+        ],
+        "title": "TopProduct"
       },
       "UpdateOrderStatusBody": {
         "properties": {
