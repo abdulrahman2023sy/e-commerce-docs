@@ -1998,12 +1998,17 @@
           "value": {
             "type": "integer",
             "title": "Value"
+          },
+          "percentage": {
+            "type": "string",
+            "title": "Percentage"
           }
         },
         "type": "object",
         "required": [
           "name",
-          "value"
+          "value",
+          "percentage"
         ],
         "title": "CategoryDataPoint"
       },
